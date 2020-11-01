@@ -1,0 +1,51 @@
+.home-page{
+
+    h1{
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .MuiInputBase-root {
+        margin-bottom: 1rem;
+    }
+
+    .MuiPaper-root-5{
+        margin-top: 2rem;
+        .MuiTableContainer-root{
+            max-height: 40rem;
+        }
+    
+        .MuiTable-root-34,
+        .MuiTablePagination-toolbar-55{
+            direction: ltr;
+        }
+
+        .MuiTableCell-body-43,
+        .MuiTableCell-stickyHeader-52{
+            cursor: pointer;
+        }
+
+
+    }
+
+
+
+    .MuiBackdrop-root {
+        background-color:#00000080;
+    }
+
+
+    .filter-modal{
+        
+    
+
+        .modal{
+            background-color: #fff;
+            .makeStyles-paper-55{
+                background-color: #fff;
+            }
+        }
+
+    }
+}
+

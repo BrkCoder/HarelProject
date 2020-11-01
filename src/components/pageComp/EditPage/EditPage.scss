@@ -1,0 +1,12 @@
+.edit-page{
+ .edit-inputs{
+     display: flex;
+     flex-direction: column;
+     width:20rem;
+     margin:0 auto;
+
+     .MuiFormControl-root{
+         margin:1rem 0;
+     }
+ }   
+}
