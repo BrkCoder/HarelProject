@@ -3,7 +3,7 @@ import './LoginPage.scss';
 import { useLocation, Redirect } from "react-router-dom";
 import { TextField, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { login } from '../../../actions/auth';
+import { login } from '../../../actions/authAction';
 import { useForm } from "react-hook-form";
 
 
@@ -16,7 +16,6 @@ const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@
 
 
 const LoginPageWithRedirect = (props) => {
-    console.log("LoginPageWithRedirect -> props", props)
     if (props.loggedIn) return <Redirect to='/home' />
     else return <LoginPage {...props} />
 }
@@ -25,20 +24,20 @@ const LoginPageWithRedirect = (props) => {
 function LoginPage(props) {
 
     const location = useLocation();
-    const { from, unauthorized } = location.state || null;
+    const { unauthorized } = location.state || null;
 
     const { register, handleSubmit, errors } = useForm();
 
-    const onSubmit = data => {
-        console.log('data,', data);
-        props.login(data);
-    }
+    const onSubmit = data => props.login(data);
+
 
     return (
         <div className='login-page page'>
             <div className='login-container'>
+                <div className='headers'>
                 <h1>ברוכים הבאים לעמוד הכניסה!</h1>
                 <h3>אנא הזדהו</h3>
+                </div>
                 <form className='login-form' onSubmit={handleSubmit(onSubmit)}>
                     <TextField
                         inputRef={register({ required: true })}

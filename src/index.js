@@ -15,9 +15,10 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* //due to a problem in material ui dialog, i need to remove strict mode */}
+    {/* <React.StrictMode> */}
       <App />
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>,
   document.getElementById('root')
 );

@@ -1,74 +1,82 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import { TextField, Typography, Slider } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { selectedWayToFilterColumn, confirmFilterWayToColumn } from '../../../actions/fetchAction.js';
+import { selectedWayToFilterColumn, confirmFilterWayToColumn,clearFilterOnFetchedData } from '../../../actions/fetchAction.js';
+import { 
+    TextField, Typography, Slider,
+    //dialog
+    Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+    import {ToggleButton,ToggleButtonGroup} from '@material-ui/lab';
 
-
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-
+    
 function FilterDialog(props) {
+    const OK_BTN = 'OK_BTN', CANCEL_BTN = 'CANCEL_BTN';
 
     const whichFilter = () => {
         switch (props.columnName) {
             case 'lastName': case 'firstName': case 'phone':
-                return <ContainsFilter {...props} inputType={props.columnName==='phone'?'number':'text'} />
+                return <ContainsFilter {...props} inputType={props.columnName === 'phone' ? 'number' : 'text'} />
             case 'id': return <IDFilter {...props} />
             case 'date': return <DateFilter {...props} />
         }
     }
 
-    const okButtonClicked = () => {
+    const handleBtns = (type) => {
         props.toggleFilterWindow();
-        props.confirmFilterWayToColumn();
+
+        if (type === OK_BTN) props.confirmFilterWayToColumn();
+        else if (type === CANCEL_BTN) props.clearFilterOnFetchedData();
     }
 
     return (
         <Dialog
             open={props.openFilterWindow}
-            onClose={props.toggleFilterWindow}
+            onClose={() => handleBtns(CANCEL_BTN)}
             aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
+            aria-describedby="alert-dialog-description">
             <DialogTitle id="alert-dialog-title">איך תרצה לסנן את העמודה?</DialogTitle>
             <DialogContent>
                 {whichFilter()}
             </DialogContent>
             <DialogActions>
-                <Button onClick={okButtonClicked} color="primary">אישור</Button>
+                <Button onClick={() => handleBtns(OK_BTN)} color="primary" autoFocus>אישור</Button>
+                <Button onClick={() => handleBtns(CANCEL_BTN)} color="primary">ביטול</Button>
             </DialogActions>
         </Dialog>
     );
 }
 
 
-const ContainsFilter = ({ selectedWayToFilterColumn,inputType }) => {
-    const [input,setInput]=useState('');
-    
-    const hundleInput=({target:{value}})=>{
+const ContainsFilter = ({ selectedWayToFilterColumn, inputType }) => {
+    const [input, setInput] = useState('');
+
+    const hundleInput = ({ target: { value } }) => {
         setInput(value);
         selectedWayToFilterColumn(value);
     }
 
-    return(
-    <TextField id="standard-basic"
-        type={inputType}
-        name='firstNameFilter'
-        label='פילטר'
-        onChange={hundleInput}
-        value={input}/>
-)}
+    return (
+        <TextField id="standard-basic"
+            type={inputType}
+            name='firstNameFilter'
+            label='פילטר'
+            onChange={hundleInput}
+            value={input} />
+    )
+}
 
 
-const IDFilter = ({ selectedWayToFilterColumn }) => {
+const IDFilter = (props) => {
     const [sliders, setSliders] = useState({ moreThen: 0, lessThen: 100 })
 
-    const setSliderVal = (sliderType) => selectedWayToFilterColumn(sliders)
+    const setSliderVal = () => props.selectedWayToFilterColumn(sliders)
     const onChangeSliders = (value, sliderType) => setSliders(prev => ({
         ...prev,
         [sliderType]: value
     }))
+
+    useEffect(() => () => {
+        if (props.fetch&&!props.fetch.filterWay) props.selectedWayToFilterColumn(sliders);
+    }, [])
 
     return (
         <>
@@ -78,7 +86,7 @@ const IDFilter = ({ selectedWayToFilterColumn }) => {
                 aria-labelledby="discrete-slider"
                 valueLabelDisplay="auto"
                 name='moreThen'
-                onChangeCommitted={() => setSliderVal('moreThen')}
+                onChangeCommitted={setSliderVal}
                 onChange={(event, val) => onChangeSliders(val, 'moreThen')}
                 step={1}
                 min={0}
@@ -90,7 +98,7 @@ const IDFilter = ({ selectedWayToFilterColumn }) => {
                 value={sliders.lessThen}
                 aria-labelledby="discrete-slider"
                 valueLabelDisplay="auto"
-                onChangeCommitted={() => setSliderVal('lessThen')}
+                onChangeCommitted={setSliderVal}
                 onChange={(event, val) => onChangeSliders(val, 'lessThen')}
                 step={1}
                 min={0}
@@ -126,4 +134,4 @@ const DateFilter = ({ selectedWayToFilterColumn }) => {
 
 const mapStateToProps = (state, ownProps) => state.fetched;
 
-export default connect(mapStateToProps, { selectedWayToFilterColumn, confirmFilterWayToColumn })(FilterDialog);
+export default connect(mapStateToProps, { selectedWayToFilterColumn, confirmFilterWayToColumn,clearFilterOnFetchedData })(FilterDialog);

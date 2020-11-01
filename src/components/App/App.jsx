@@ -49,16 +49,16 @@ function App() {
           } />
 
         <Route path="/login" component={LoginPage} />
-        {/* <PrivateRoute path="/home" component={HomePage} /> */}
-        <Route path="/home" component={HomePage} />
-
-        {/* <Route path="/edit/:userId" Component={EditPage} /> */}
+        <PrivateRoute path="/home" component={HomePage} />
         <PrivateRoute path="/edit/:userId" component={EditPage} />
-        {/* <Route component={NoMatch} /> */}
+        <PrivateRoute component={NoMatch} />
       </Switch>
     </Router>
   );
 }
+
+
+const NoMatch=()=><div>הגעת לעמוד לא קיים. אנא שנה את הURL</div>
 
 
 export default () =>
