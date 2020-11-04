@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^12.1.10",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
+    "jss": "^10.4.0",
     "jss-rtl": "^0.3.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
@@ -50,5 +51,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.1.2"
   }
 }

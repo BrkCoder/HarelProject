@@ -1,5 +1,3 @@
 import customFetch from './customFetch';
 
-export {
-    customFetch
-}
+export { customFetch };

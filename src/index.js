@@ -1,26 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import { App } from './components';
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './reducers';
 import thunkMiddleware from 'redux-thunk';
 
-const store = createStore(
-  rootReducer,
-  applyMiddleware(thunkMiddleware)
-);
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
   <Provider store={store}>
     {/* //due to a problem in material ui dialog, i need to remove strict mode */}
     {/* <React.StrictMode> */}
-      <App />
+    <App />
     {/* </React.StrictMode> */}
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
