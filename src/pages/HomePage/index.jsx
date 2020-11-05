@@ -1,43 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
-import {
-  TextField,
-  Button,
-  //table components
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import MuiDirection from '../../components/MuiDirection';
-import TablePagination from '@material-ui/core/TablePagination';
-import * as fetchAction from '../../actions/fetchAction.js';
-import FilterDialog from './FilterDialog.jsx';
-import { useHistory } from 'react-router-dom';
+import * as homePageAction from '../../actions/homePageAction.js';
+import FilterDialog from './FilterDialog/index.jsx';
+import PropTypes from 'prop-types';
+import ClientsTable from './ClientsTable.jsx';
 
-function HomePage(props) {
+const HomePage = (props) => {
   console.log('HomePage -> props', props);
-  const [filterInput, setFilterInput] = useState('');
+  const [globalFilterInput, setglobalFilterInput] = useState('');
   const [openFilterWindow, setOpenFilterWindow] = useState(false);
 
-  const handleFilterInput = ({ target: { value } }) => {
-    setFilterInput(value);
-    props.selectedColumnToFilter('all');
+  const handleglobalFilterInput = ({ target: { value } }) => {
+    setglobalFilterInput(value);
+    props.updateActionTypeOnColumn({ columnName: 'all', action: 'filter' });
     props.selectedWayToFilterColumn(value);
     props.confirmFilterWayToColumn();
   };
 
-  const clearFilterBtn = () => props.clearFilterOnFetchedData();
-
   const toggleFilterWindow = () => setOpenFilterWindow((prev) => !prev);
+
+  useEffect(() => {
+    const { actionOnColumn } = props;
+    if (actionOnColumn && actionOnColumn.action === 'filter' && !actionOnColumn.complete)
+      setOpenFilterWindow(true);
+  }, [props.actionOnColumn]);
+
+  const { action, columnName, complete } = props.actionOnColumn || {};
 
   return (
     <div className="home-page page">
       <h1>עמוד הבית</h1>
+
       <div className="upper-info">
         <TextField
           id="outlined-search"
@@ -45,120 +40,30 @@ function HomePage(props) {
           type="search"
           variant="outlined"
           name="filter"
-          onChange={handleFilterInput}
+          value={globalFilterInput}
+          onChange={handleglobalFilterInput}
         />
-        {props.fetched.startFilter && (
-          <Button onClick={clearFilterBtn} variant="contained" color="primary">
-            לחץ בשביל לאפס את הסינון על עמודת {props.fetched.columnName}
+        {complete && (
+          <Button onClick={props.clearActionOnColumn} variant="contained" color="primary">
+            לחץ בשביל לאפס את ה{action} על עמודת {columnName}
           </Button>
         )}
       </div>
-      <CustomersTable {...{ ...props, toggleFilterWindow }} />
-      <FilterDialog {...{ toggleFilterWindow, openFilterWindow }} />
+
+      <ClientsTable {...{ ...props, toggleFilterWindow }} />
+      <FilterDialog {...{ toggleFilterWindow, open: openFilterWindow }} />
     </div>
   );
-}
+};
 
-function CustomersTable(props) {
-  let history = useHistory();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+HomePage.propTypes = {
+  selectedColumnToFilter: PropTypes.func,
+  selectedWayToFilterColumn: PropTypes.func,
+  confirmFilterWayToColumn: PropTypes.func,
+  clearActionOnColumn: PropTypes.func.isRequired,
+  fetched: PropTypes.object,
+  actionOnColumn: PropTypes.object,
+  updateActionTypeOnColumn: PropTypes.func.isRequired,
+};
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  useEffect(() => {
-    props.fetchAction('/users');
-  }, []);
-
-  const handleFilterWindow = (columnName) => {
-    props.selectedColumnToFilter(columnName);
-    props.toggleFilterWindow();
-  };
-
-  const moveToEdit = ({ id }) => {
-    history.push(`/edit/${id}`);
-  };
-
-  const { filteredRes = [], error = '' } = props.fetched;
-
-  if (error) return <div>ישנה תקלה. {props.fetched.error}</div>;
-  else
-    return (
-      <MuiDirection dir="ltr">
-        <Paper>
-          <TableContainer>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" onClick={() => handleFilterWindow('id')}>
-                    Id
-                  </TableCell>
-                  <TableCell align="center" onClick={() => handleFilterWindow('firstName')}>
-                    First Name
-                  </TableCell>
-                  <TableCell align="center" onClick={() => handleFilterWindow('lastName')}>
-                    Last Name
-                  </TableCell>
-                  <TableCell align="center" onClick={() => handleFilterWindow('date')}>
-                    Date
-                  </TableCell>
-                  <TableCell align="center" onClick={() => handleFilterWindow('phone')}>
-                    Phone
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {filteredRes
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((data) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={`row${data.id}`}
-                        onClick={() => moveToEdit(data)}
-                      >
-                        <TableCell key={`cell-${data.id}-id`} align="center">
-                          {data.id}
-                        </TableCell>
-                        <TableCell key={`cell-${data.id}-fn`} align="center">
-                          {data.firstName}
-                        </TableCell>
-                        <TableCell key={`cell-${data.id}-ln`} align="center">
-                          {data.lastName}
-                        </TableCell>
-                        <TableCell key={`cell-${data.id}-d`} align="center">
-                          {new Date(data.date).toLocaleDateString('en-GB')}
-                        </TableCell>
-                        <TableCell key={`cell-${data.id}-p`} align="center">
-                          {data.phone}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={filteredRes.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </MuiDirection>
-    );
-}
-
-const mapStateToProps = (state, ownProps) => state;
-export default connect(mapStateToProps, fetchAction)(HomePage);
+export default connect((state) => state.homePage, homePageAction)(HomePage);

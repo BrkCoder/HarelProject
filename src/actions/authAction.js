@@ -1,5 +1,6 @@
-import { customFetch } from '../functions';
+import customFetch from '../functions/customFetch.js';
 import * as types from './actionTypes.js';
+import produce from 'immer';
 
 export const login = (userInfo) => async (dispatch, getState) => {
   const [loginRes, loginErr] = await customFetch('/login', {
@@ -8,19 +9,22 @@ export const login = (userInfo) => async (dispatch, getState) => {
     body: JSON.stringify(userInfo),
   });
 
-  if (loginErr)
-    dispatch({
-      type: types.ADD_TO_STATE,
-      payload: { error: loginErr, isLoggedIn: false },
-    });
-  else {
-    localStorage.setItem('token', loginRes);
-    dispatch({
-      type: types.ADD_TO_STATE,
-      payload: {
-        token: loginRes,
-        isLoggedIn: true,
-      },
-    });
-  }
+  const updatedState = produce(getState().loginPage, (draft) => {
+    if (loginErr) {
+      draft.loginErr = loginErr;
+      draft.loggedIn = false;
+    } else {
+      delete draft.loginErr;
+      Object.assign(draft, {
+        ...loginRes,
+        user: { firstName: userInfo.firstName, lastName: userInfo.lastName },
+        loggedIn: true,
+      });
+    }
+  });
+
+  dispatch({
+    type: types.UPDATE_STATE_LOGINPAGE,
+    updatedState,
+  });
 };

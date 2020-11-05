@@ -19,5 +19,5 @@ export const dateFilter = (res, filterWay) => {
 
 export const idFilter = (res, filterWay) => {
   const { lessThen = 0, moreThen = 0 } = filterWay || {};
-  return res.filter(({ id }) => id > moreThen && id < lessThen);
+  return res.filter(({ id }) => id >= moreThen && id <= lessThen);
 };

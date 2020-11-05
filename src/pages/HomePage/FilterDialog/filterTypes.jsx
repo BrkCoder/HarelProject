@@ -1,71 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import {
-  selectedWayToFilterColumn,
-  confirmFilterWayToColumn,
-  clearFilterOnFetchedData,
-} from '../../actions/fetchAction';
-import {
-  TextField,
-  Typography,
-  Slider,
-  //dialog
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@material-ui/core';
+import { TextField, Typography, Slider } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import PropTypes from 'prop-types';
 
-function FilterDialog(props) {
-  const OK_BTN = 'OK_BTN',
-    CANCEL_BTN = 'CANCEL_BTN';
-
-  const whichFilter = () => {
-    switch (props.columnName) {
-      case 'lastName':
-      case 'firstName':
-      case 'phone':
-        return (
-          <ContainsFilter {...props} inputType={props.columnName === 'phone' ? 'number' : 'text'} />
-        );
-      case 'id':
-        return <IDFilter {...props} />;
-      case 'date':
-        return <DateFilter {...props} />;
-    }
-  };
-
-  const handleBtns = (type) => {
-    props.toggleFilterWindow();
-
-    if (type === OK_BTN) props.confirmFilterWayToColumn();
-    else if (type === CANCEL_BTN) props.clearFilterOnFetchedData();
-  };
-
-  return (
-    <Dialog
-      open={props.openFilterWindow}
-      onClose={() => handleBtns(CANCEL_BTN)}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">איך תרצה לסנן את העמודה?</DialogTitle>
-      <DialogContent>{whichFilter()}</DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleBtns(OK_BTN)} color="primary" autoFocus>
-          אישור
-        </Button>
-        <Button onClick={() => handleBtns(CANCEL_BTN)} color="primary">
-          ביטול
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-const ContainsFilter = ({ selectedWayToFilterColumn, inputType }) => {
+export const ContainsFilter = ({ selectedWayToFilterColumn }) => {
   const [input, setInput] = useState('');
 
   const hundleInput = ({ target: { value } }) => {
@@ -76,7 +14,7 @@ const ContainsFilter = ({ selectedWayToFilterColumn, inputType }) => {
   return (
     <TextField
       id="standard-basic"
-      type={inputType}
+      type="text"
       name="firstNameFilter"
       label="פילטר"
       onChange={hundleInput}
@@ -85,10 +23,11 @@ const ContainsFilter = ({ selectedWayToFilterColumn, inputType }) => {
   );
 };
 
-const IDFilter = (props) => {
+export const IDFilter = (props) => {
   const [sliders, setSliders] = useState({ moreThen: 0, lessThen: 100 });
 
   const setSliderVal = () => props.selectedWayToFilterColumn(sliders);
+
   const onChangeSliders = (value, sliderType) =>
     setSliders((prev) => ({
       ...prev,
@@ -97,7 +36,8 @@ const IDFilter = (props) => {
 
   useEffect(
     () => () => {
-      if (props.fetch && !props.fetch.filterWay) props.selectedWayToFilterColumn(sliders);
+      if (props.actionOnColumn && !props.actionOnColumn.filterWay)
+        props.selectedWayToFilterColumn(sliders);
     },
     [],
   );
@@ -136,7 +76,7 @@ const IDFilter = (props) => {
   );
 };
 
-const DateFilter = ({ selectedWayToFilterColumn }) => {
+export const DateFilter = ({ selectedWayToFilterColumn }) => {
   const [alignment, setAlignment] = useState('left');
 
   const handleAlignment = (event, newAlignment) => {
@@ -169,10 +109,15 @@ const DateFilter = ({ selectedWayToFilterColumn }) => {
   );
 };
 
-const mapStateToProps = (state, ownProps) => state.fetched;
+ContainsFilter.propTypes = {
+  selectedWayToFilterColumn: PropTypes.func.isRequired,
+};
 
-export default connect(mapStateToProps, {
-  selectedWayToFilterColumn,
-  confirmFilterWayToColumn,
-  clearFilterOnFetchedData,
-})(FilterDialog);
+IDFilter.propTypes = {
+  selectedWayToFilterColumn: PropTypes.func.isRequired,
+  actionOnColumn: PropTypes.object.isRequired,
+};
+
+DateFilter.propTypes = {
+  selectedWayToFilterColumn: PropTypes.func.isRequired,
+};

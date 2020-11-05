@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const HomeRoute = ({ to }) => {
+function HomeRoute({ to }) {
   return (
     <Route
       exact
@@ -19,10 +19,9 @@ const HomeRoute = ({ to }) => {
       )}
     />
   );
-};
-
-HomeRoute.PropTypes = {
-  to: PropTypes.string,
+}
+HomeRoute.propTypes = {
+  to: PropTypes.string.isRequired,
 };
 
 export default HomeRoute;
