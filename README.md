@@ -4,9 +4,9 @@ Technologies:
 ReactJs, Redux, Mterial UI, jest and more(special hooks etc...)
 
 This project contains 3 pages-
--Login
--Home
--EditUser
+- Login
+- Home
+- EditUser
 
 ### LoginPage
 
