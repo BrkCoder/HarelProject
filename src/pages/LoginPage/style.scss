@@ -35,13 +35,18 @@
   }
 
   .login-form {
-    // background-color: red;
-    width: 40%;
+    width: 40rem;
     display: flex;
     flex-direction: column;
 
     .MuiFormControl-root {
       margin: 1rem 0;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }
@@ -54,7 +59,7 @@
     }
 
     .login-form {
-      width: 75%;
+      width: 20rem;
     }
   }
 }
@@ -68,7 +73,7 @@
     }
 
     .login-form {
-      width: 70%;
+      width: 20rem;
     }
   }
 }

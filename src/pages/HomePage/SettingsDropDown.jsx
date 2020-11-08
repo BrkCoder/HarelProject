@@ -59,4 +59,4 @@ SettingsDropDown.propTypes = {
   actionOnColumn: PropTypes.object,
 };
 
-export default connect((state) => state.homePage, homPageAction)(SettingsDropDown);
+export default connect((state) => state, homPageAction)(SettingsDropDown);

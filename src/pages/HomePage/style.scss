@@ -7,23 +7,29 @@
 
   .upper-info {
     display: flex;
-    width: 100%;
-    & > * {
-      margin: 0 1rem;
-    }
   }
 
   .MuiButton-containedPrimary {
     height: 3rem;
   }
 
+  .MuiCircularProgress-root {
+    display: block;
+    margin: auto;
+  }
+
   .MuiInputBase-root {
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 1rem;
   }
 
   .MuiPaper-root-5 {
     .MuiTableContainer-root-33 {
-      max-height: 65vh;
+      max-height: 60vh;
+    }
+
+    .MuiTableBody-root-244,
+    .MuiTableBody-root {
+      overflow-y: scroll;
     }
 
     .MuiTable-root-34,

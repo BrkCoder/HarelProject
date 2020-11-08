@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as homePageAction from '../../../actions/homePageAction';
+import * as homePageAction from '../../actions/homePageAction';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { ContainsFilter, IDFilter, DateFilter } from './filterTypes.jsx';
 
 function FilterDialog(props) {
+  //funcs
   const whichFilter = () => {
     if (!props.actionOnColumn) return;
     switch (props.actionOnColumn.columnName) {
@@ -17,6 +18,8 @@ function FilterDialog(props) {
         return <IDFilter {...props} />;
       case 'date':
         return <DateFilter {...props} />;
+      default:
+        return;
     }
   };
 
@@ -59,4 +62,4 @@ FilterDialog.propTypes = {
   clearActionOnColumn: PropTypes.func.isRequired,
 };
 
-export default connect((state) => state.homePage, homePageAction)(FilterDialog);
+export default connect((state) => state, homePageAction)(FilterDialog);

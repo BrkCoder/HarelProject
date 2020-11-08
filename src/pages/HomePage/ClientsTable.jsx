@@ -9,25 +9,26 @@ import {
   TableRow,
   Paper,
   TablePagination,
+  CircularProgress,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import MuiDirection from '../../components/MuiDirection';
-import * as homePageAction from '../../actions/homePageAction.js';
 import SettingsDropDown from './SettingsDropDown.jsx';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 
-// const sortAl
-
-const ClientsTable = (props) => {
+function ClientsTable(props) {
   //states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [loading, setLoading] = useState(false);
   let history = useHistory();
 
   //useEffects
   useEffect(() => {
+    setLoading(true);
     props.fetchClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //funcs
@@ -36,14 +37,14 @@ const ClientsTable = (props) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  const moveToEdit = ({ id }) => history.push(`/edit/${id}`);
+  const moveToEdit = (id) => history.push(`/edit/${id}`);
 
   //destructuring
   const { filteredClients = [], fetchClientsErr } = props;
 
   //return
   if (fetchClientsErr) return <div>ישנה תקלה. {fetchClientsErr}</div>;
+  else if (loading && !props.filteredClients) return <CircularProgress />;
   else
     return (
       <MuiDirection dir="ltr">
@@ -52,38 +53,23 @@ const ClientsTable = (props) => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  <TableCell
-                    align="center"
-                    //   onClick={() => handleFilterWindow('id')}
-                  >
+                  <TableCell align="center">
                     Id
                     <SettingsDropDown columnName="id" />
                   </TableCell>
-                  <TableCell
-                    align="center"
-                    //   onClick={() => handleFilterWindow('firstName')}
-                  >
+                  <TableCell align="center">
                     First Name
                     <SettingsDropDown columnName="firstName" />
                   </TableCell>
-                  <TableCell
-                    align="center"
-                    //   onClick={() => handleFilterWindow('lastName')}
-                  >
+                  <TableCell align="center">
                     Last Name
                     <SettingsDropDown columnName="lastName" />
                   </TableCell>
-                  <TableCell
-                    align="center"
-                    //   onClick={() => handleFilterWindow('date')}
-                  >
+                  <TableCell align="center">
                     Date
                     <SettingsDropDown columnName="date" />
                   </TableCell>
-                  <TableCell
-                    align="center"
-                    //   onClick={() => handleFilterWindow('phone')}
-                  >
+                  <TableCell align="center">
                     Phone
                     <SettingsDropDown columnName="phone" />
                   </TableCell>
@@ -100,7 +86,7 @@ const ClientsTable = (props) => {
                         role="checkbox"
                         tabIndex={-1}
                         key={`row${data.id}`}
-                        onClick={() => moveToEdit(data)}
+                        onClick={moveToEdit.bind(null, data.id)}
                       >
                         <TableCell key={`cell-${data.id}-id`} align="center">
                           {data.id}
@@ -135,8 +121,11 @@ const ClientsTable = (props) => {
         </Paper>
       </MuiDirection>
     );
+}
+
+ClientsTable.propTypes = {
+  filteredClients: PropTypes.array,
+  fetchClientsErr: PropTypes.string,
 };
 
-ClientsTable.propTypes = {};
-
-export default connect((state) => state.homePage, {})(ClientsTable);
+export default connect((state) => state, {})(ClientsTable);

@@ -4,4 +4,4 @@ export const inputErrStr = Object.freeze({
 });
 
 //regex
-export const emailReg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/g;
+export const emailReg = new RegExp(/^[^@]+@[^@]+\.[^@]+$/);

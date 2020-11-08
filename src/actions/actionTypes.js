@@ -5,23 +5,10 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 //fetch
 export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAILED = 'FETCH_FAILED';
-
-//actions to filter fetched data
-export const SELECTED_WAY_TO_FILTER_COLUMN = 'SELECTED_WAY_TO_FILTER_COLUMN';
-export const SELECTED_COLUMN_TO_FILTER = 'SELECTED_COLUMN_TO_FILTER';
-export const CONFIRM_FILTER_WAY_TO_COLUMN = 'CONFIRM_FILTER_WAY_TO_COLUMN';
-
-///delete fetched data
-export const CLEAR_FILTER_ON_FETCHED_DATA = 'CLEAR_FILTER_ON_FETCHED_DATA';
-export const SAVE_FETCHED_DATA_BEFORE_ANOTHER_FETCH = 'SAVE_FETCHED_DATA_BEFORE_ANOTHER_FETCH';
-
-export const FETCH_CLIENT_SUCCESS = 'FETCH_CLIENT_SUCCESS';
-export const FETCH_CLIENT_FAILED = 'FETCH_CLIENT_FAILED';
-///newwwwww
-export const DELETE_FROM_STATE = 'DELETE_FROM_STATE';
-export const ADD_TO_STATE = 'ADD_TO_STATE';
-
 //newwwwwwwwwwwwwwwwwwwwww
 export const UPDATE_STATE_HOMEPAGE = 'UPDATE_STATE_HOMEPAGE';
 export const UPDATE_STATE_LOGINPAGE = 'UPDATE_STATE_LOGIN_PAGE';
 export const UPDATE_STATE_EDITPAGE = 'UPDATE_STATE_EDITPAGE';
+
+//new========================================
+export const UPDATE_STATE = 'UPDATE_STATE';

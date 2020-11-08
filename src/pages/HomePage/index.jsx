@@ -3,15 +3,16 @@ import './style.scss';
 import { TextField, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
 import * as homePageAction from '../../actions/homePageAction.js';
-import FilterDialog from './FilterDialog/index.jsx';
+import FilterDialog from './FilterDialog.jsx';
 import PropTypes from 'prop-types';
 import ClientsTable from './ClientsTable.jsx';
 
-const HomePage = (props) => {
-  console.log('HomePage -> props', props);
+function HomePage(props) {
+  //useStates
   const [globalFilterInput, setglobalFilterInput] = useState('');
   const [openFilterWindow, setOpenFilterWindow] = useState(false);
 
+  //funcs
   const handleglobalFilterInput = ({ target: { value } }) => {
     setglobalFilterInput(value);
     props.updateActionTypeOnColumn({ columnName: 'all', action: 'filter' });
@@ -21,12 +22,14 @@ const HomePage = (props) => {
 
   const toggleFilterWindow = () => setOpenFilterWindow((prev) => !prev);
 
+  //useEffects
   useEffect(() => {
     const { actionOnColumn } = props;
     if (actionOnColumn && actionOnColumn.action === 'filter' && !actionOnColumn.complete)
       setOpenFilterWindow(true);
   }, [props.actionOnColumn]);
 
+  //destructuring
   const { action, columnName, complete } = props.actionOnColumn || {};
 
   return (
@@ -54,16 +57,14 @@ const HomePage = (props) => {
       <FilterDialog {...{ toggleFilterWindow, open: openFilterWindow }} />
     </div>
   );
-};
+}
 
 HomePage.propTypes = {
-  selectedColumnToFilter: PropTypes.func,
-  selectedWayToFilterColumn: PropTypes.func,
-  confirmFilterWayToColumn: PropTypes.func,
+  selectedWayToFilterColumn: PropTypes.func.isRequired,
+  confirmFilterWayToColumn: PropTypes.func.isRequired,
   clearActionOnColumn: PropTypes.func.isRequired,
-  fetched: PropTypes.object,
   actionOnColumn: PropTypes.object,
   updateActionTypeOnColumn: PropTypes.func.isRequired,
 };
 
-export default connect((state) => state.homePage, homePageAction)(HomePage);
+export default connect((state) => state, homePageAction)(HomePage);

@@ -2,30 +2,27 @@ import React from 'react';
 import './style.scss';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import PrivateRoute from '../../customRoutes/PrivateRoute.jsx';
-import HomeRoute from '../../customRoutes/HomeRoute.jsx';
 import MuiDirection from '../MuiDirection.jsx';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
+//page components
 import LoginPage from '../../pages/LoginPage';
 import HomePage from '../../pages/HomePage';
 import EditPage from '../../pages/EditPage';
 import NoMatchPage from '../../pages/NoMatchPage';
 
-const App = ({ loggedIn }) => {
-  loggedIn = false;
+const App = () => {
   return (
     <MuiDirection dir="rtl">
       <Router>
         <Switch>
-          {/* <HomeRoute to="/login" /> */}
           <Route
             exact
             path="/"
             render={({ location }) => (
               <Redirect
                 to={{
-                  pathname: loggedIn ? '/home' : '/login',
+                  pathname: localStorage.getItem('token') ? '/home' : '/login',
                   state: {
                     from: location,
                   },
@@ -43,8 +40,6 @@ const App = ({ loggedIn }) => {
   );
 };
 
-App.propTypes = {
-  loggedIn: PropTypes.bool,
-};
+App.propTypes = {};
 
-export default connect((state) => state.loginPage)(App);
+export default connect((state) => state)(App);

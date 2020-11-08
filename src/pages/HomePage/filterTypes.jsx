@@ -4,8 +4,9 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 
 export const ContainsFilter = ({ selectedWayToFilterColumn }) => {
+  //useStates
   const [input, setInput] = useState('');
-
+  //funcs
   const hundleInput = ({ target: { value } }) => {
     setInput(value);
     selectedWayToFilterColumn(value);
@@ -24,16 +25,18 @@ export const ContainsFilter = ({ selectedWayToFilterColumn }) => {
 };
 
 export const IDFilter = (props) => {
+  //useStates
   const [sliders, setSliders] = useState({ moreThen: 0, lessThen: 100 });
 
+  //funcs
   const setSliderVal = () => props.selectedWayToFilterColumn(sliders);
-
   const onChangeSliders = (value, sliderType) =>
     setSliders((prev) => ({
       ...prev,
       [sliderType]: value,
     }));
 
+  //useEffects
   useEffect(
     () => () => {
       if (props.actionOnColumn && !props.actionOnColumn.filterWay)
@@ -77,8 +80,9 @@ export const IDFilter = (props) => {
 };
 
 export const DateFilter = ({ selectedWayToFilterColumn }) => {
+  //useStates
   const [alignment, setAlignment] = useState('left');
-
+  //funcs
   const handleAlignment = (event, newAlignment) => {
     selectedWayToFilterColumn(newAlignment);
     setAlignment(newAlignment);

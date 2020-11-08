@@ -1,24 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.scss';
 import { useLocation, Redirect } from 'react-router-dom';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, CircularProgress } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authAction.js';
+import { login } from '../../actions/loginAction.js';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import { inputErrStr, emailReg } from '../../constants.js';
 
 const LoginPage = (props) => {
-  if (props.loggedIn || (localStorage.getItem('token') && !props.loginErr))
-    return <Redirect to="/home" />;
+  if (props.loggedIn || localStorage.getItem('token')) return <Redirect to="/home" />;
   else return <LoginPageContent {...props} />;
 };
 
 const LoginPageContent = (props) => {
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { unauthorized } = location.state || null;
   const { register, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => props.login(data);
+  const onSubmit = (data) => {
+    setLoading(true);
+    props.login(data);
+  };
 
   return (
     <div className="login-page page">
@@ -66,9 +69,15 @@ const LoginPageContent = (props) => {
             helperText={errors.password && inputErrStr[errors.password.type]}
           />
 
-          <Button type="submit" variant="contained" color="primary">
-            התחבר
-          </Button>
+          <div className="footer">
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Button type="submit" variant="contained" color="primary">
+                התחבר
+              </Button>
+            )}
+          </div>
         </form>
 
         {unauthorized && <p className="unauthorized">אנא התחברו, אין לכם גישה לעמוד הבית</p>}
@@ -82,8 +91,8 @@ LoginPageContent.propTypes = {
 };
 
 LoginPage.propTypes = {
-  loggedIn: PropTypes.bool,
   login: PropTypes.func.isRequired,
+  loggedIn: PropTypes.bool,
 };
 
-export default connect((state) => state.loginPage, { login })(LoginPage);
+export default connect((state) => state, { login })(LoginPage);
